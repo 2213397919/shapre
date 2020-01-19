@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<title>相数云重点用户</title>
+<style>
+html, body {
+	height: 100%;
+}
+
+body {
+	background-color: #000000;
+	margin: 0;
+	font-family: Helvetica, sans-serif;;
+	overflow: hidden;
+}
+
+a {
+	color: #ffffff;
+}
+
+#info {
+	position: absolute;
+	width: 100%;
+	color: #ffffff;
+	padding: 5px;
+	font-family: Monospace;
+	font-size: 13px;
+	font-weight: bold;
+	text-align: center;
+	z-index: 1;
+}
+
+#menu {
+	position: absolute;
+	bottom: 20px;
+	width: 100%;
+	text-align: center;
+	font-family: verdana,Tahoma,Arial,Hei,"Microsoft Yahei",SimHei;
+}
+
+.element {
+	width: 200px;
+	height: 160px;
+	box-shadow: 0px 0px 12px rgba(0,255,255,0.5);
+	border: 1px solid rgba(127,255,255,0.25);
+	text-align: center;
+	cursor: default;
+}
+
+.element:hover {
+	box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+	border: 1px solid rgba(127,255,255,0.75);
+}
+
+	.element .number {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		font-size: 12px;
+		color: rgba(127,255,255,0.75);
+	}
+
+	.element .symbol {
+		position: absolute;
+		top: 40px;
+		left: 0px;
+		right: 0px;
+		font-size: 25px;
+		font-weight: bold;
+		color: rgba(255,255,255,0.75);
+		text-shadow: 0 0 10px rgba(0,255,255,0.95);
+	}
+
+	.element .details {
+		position: absolute;
+		bottom: 15px;
+		left: 0px;
+		right: 0px;
+		font-size: 12px;
+		color: rgba(127,255,255,0.75);
+	}
+
+button {
+	color: rgba(127,255,255,0.75);
+	background: transparent;
+	outline: 1px solid rgba(127,255,255,0.75);
+	border: 0px;
+	padding: 5px 10px;
+	cursor: pointer;
+}
+button:hover {
+	background-color: rgba(0,255,255,0.5);
+}
+button:active {
+	color: #000000;
+	background-color: rgba(0,255,255,0.75);
+}
+</style>
+</head>
+<body>
+<script src="js/three.min.js" ></script>
+<script src="js/tween.min.js" ></script>
+<script src="js/TrackballControls.js" ></script>
+<script src="js/CSS3DRenderer.js" ></script>
+
+<div id="container"></div>
+<div id="info">相数云重点用户</div>
+<div id="menu">
+<button id="table">表面</button>
+<button id="sphere">球体</button>
+<button id="helix">螺旋</button>
+<button id="grid">网格</button>
+</div>
+
+<script>
+
+var table = [
+    "相数云", "", "", 7, 5,
+	"谢菲尔德大学", "高等院校", "", 1, 1,
+	"澳门大学", "高等院校", "", 18, 1,
+	"北京大学", "高等院校", "", 1, 2,
+	"北京师范大学", "高等院校", "", 2, 2,
+	"复旦大学", "高等院校", "", 13, 2,
+	"哈佛大学", "高等院校", "", 14, 2,
+	"剑桥大学", "高等院校", "", 15, 2,
+	"清华大学", "高等院校", "", 16, 2,
+	"武汉大学", "高等院校", "", 17, 2,
+	"香港城市大学", "高等院校", "", 18, 2,
+	"中国人民大学", "高等院校", "", 1, 3,
+	"中山大学", "高等院校", "", 2, 3,
+	"河南大学", "高等院校", "", 13, 3,
+	"湖南大学设计研究院", "高等院校", "", 14, 3,
+	"中国石油大学", "高等院校", "", 15, 3,
+	"江西农业大学", "高等院校", "", 16, 3,
+	"昆明理工大学", "高等院校", "", 17, 3,
+	"青岛理工大学", "高等院校", "", 18, 3,
+	"山东大学", "高等院校", "", 1, 4,
+	"上海理工大学", "高等院校", "", 2, 4,
+	"天津城建大学", "高等院校", "", 3, 4,
+	"天津大学", "高等院校", "", 4, 4,
+	"北京图鲸科技有限公司", "IT互联网", "", 5, 4,
+	"北京智慧星光信息技术有限公司", "IT互联网", "", 6, 4,
+	"华为科技", "IT互联网", "", 7, 4,
+	"腾讯科技", "IT互联网", "", 8, 4,
+	"北京易视点数码技术有限公司", "IT互联网", "", 9, 4,
+	"海医通", "IT互联网", "", 10, 4,
+	"花园兔数字园林", "IT互联网", "", 11, 4,
+	"昆岗科技", "IT互联网", "", 12, 4,
+	"上海积成慧集信息技术有限公司", "IT互联网", "", 13, 4,
+	"深圳市椭圆方程科技有限公司", "IT互联网", "", 14, 4,
+	"武大吉奥信息技术有限公司", "IT互联网", "", 15, 4,
+	"西安若华信息科技有限公司", "IT互联网", "", 16, 4,
+	"中冶赛迪", "IT互联网", "", 17, 4,
+	"资酷科技", "IT互联网", "", 18, 4,
+	"北斗星通", "大数据", "", 1, 5,
+	"北京理工新源信息科技有限公司", "大数据", "", 2, 5,
+	"航天科工网络信息发展有限公司", "大数据", "", 3, 5,
+	"零点科技", "大数据", "", 4, 5,
+	"赛迪顾问", "大数据", "", 5, 5,
+	"泰豪", "大数据", "", 6, 5,
+	"易华录", "大数据", "", 0, 5,
+	"北京二零四八科技有限公司", "大数据", "", 8, 5,
+	"波利俘", "大数据", "", 9, 5,
+	"博宇通达", "大数据", "", 10, 5,
+	"广东国地规划科技股份有限公司", "大数据", "", 11, 5,
+	"贵州商学院", "大数据", "", 12, 5,
+	"湖北腾楚网络科技", "大数据", "", 13, 5,
+	"华夏慧品", "大数据", "", 14, 5,
+	"交通大数据", "大数据", "", 15, 5,
+	"罗兰贝格", "大数据", "", 16, 5,
+	"广西自然资源调查监测院", "国土资源", "", 17, 5,
+	"陕西自然资源勘测设计", "国土资源", "", 18, 5,
+	"博源规划设计集团有限公司", "国土资源", "", 1, 6,
+	"大山峰工作室", "国土资源", "", 2, 6,
+	"金域美境", "国土资源", "", 4, 9,
+	"国家发改委城市中心", "规划研究院", "", 5, 9,
+	"国务院发展研究中心", "规划研究院", "", 6, 9,
+	"中国城市规划设计研究院", "规划研究院", "", 7, 9,
+	"广东省建筑设计研究院", "规划研究院", "", 8, 9,
+	"河南省城乡规划设计研究总院", "规划研究院", "", 9, 9,
+	"河南省城乡建筑设计院", "规划研究院", "", 10, 9,
+	"邵阳市城市规划设计研究院", "规划研究院", "", 11, 9,
+	"清华规划院", "规划研究院", "", 12, 9,
+	"武汉市规划院", "规划研究院", "", 13, 9,
+	"西安城市规划设计研究院", "规划研究院", "", 14, 9,
+	"浙江大学城乡规划设计研究院", "规划研究院", "", 15, 9,
+	"中国航空规划", "规划研究院", "", 16, 9,
+	"中国建筑科学研究院", "规划研究院", "", 17, 9,
+	"中国中建设计集团有限公司", "规划研究院", "", 18, 9,
+	"上海市建筑科学研究院", "规划研究院", "", 4, 6,
+	"中科院地理所", "规划研究院", "", 5, 6,
+	"北京华清安地建筑设计有限公司", "规划研究院", "", 6, 6,
+	"北京市建筑设计研究院", "城市规划", "", 7, 6,
+	"城市科学规划设计研究院有限公司", "城市规划", "", 8, 6,
+	"广东省乡村振兴服务中心", "城市规划", "", 9, 6,
+	"杭州市规划院", "城市规划", "", 10, 6,
+	"河南省城乡规划设计研究总院有限公司", "城市规划", "", 11, 6,
+	"河南省规划院", "城市规划", "", 12, 6,
+	"湖北省城市规划设计研究院", "城市规划", "", 13, 6,
+	"湖南城市学院", "城市规划", "", 14, 6,
+	"嘉兴市规划设计研究院", "城市规划", "", 15, 6,
+	"江苏省城市规划设计研究院", "城市规划", "", 16, 6,
+	"宁波市规划设计研究院", "城市规划", "", 17, 6,
+	"上海市建工设计研究总院有限公司", "城市规划", "", 18, 6,
+	"深圳市城市交通规划设计研究中心有限公司", "城市规划", "", 1, 7,
+	"深圳市建筑设计研究总院有限公司", "城市规划", "", 2, 7,
+	"武汉大学城市设计学院第七工作室", "城市规划", "", 4, 10,
+	"西安市规划院", "城市规划", "232.03806", 5, 10,
+	"宿迁市规划院", "城市规划", "#231.0588", 6, 10,
+	"云南省城乡规划设计研究院", "城市规划", "", 7, 10,
+	"云南省规划院", "城市规划", "", 8, 10,
+	"中国城市科学研究会", "城市规划", "", 9, 10,
+	"中国市政西北设计院", "城市规划", "", 10, 10,
+	"遵义市规划设计院", "城市规划", "", 11, 10
+];
+
+var camera, scene, renderer;
+var controls;
+
+var objects = [];
+var targets = { table: [], sphere: [], helix: [], grid: [] };
+
+init();
+animate();
+
+function init() {
+
+	camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
+	camera.position.z = 3000;
+
+	scene = new THREE.Scene();
+
+	// table
+
+	for ( var i = 0; i < table.length; i += 5 ) {
+
+		var element = document.createElement( 'div' );
+		element.className = 'element';
+		element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
+
+		var number = document.createElement( 'div' );
+		number.className = 'number';
+		number.textContent = (i/5) + 1;
+		element.appendChild( number );
+
+		var symbol = document.createElement( 'div' );
+		symbol.className = 'symbol';
+		symbol.textContent = table[ i ];
+		element.appendChild( symbol );
+
+		var details = document.createElement( 'div' );
+		details.className = 'details';
+		details.innerHTML = table[ i + 1 ] + '<br>' + table[ i + 2 ];
+		element.appendChild( details );
+
+		var object = new THREE.CSS3DObject( element );
+		object.position.x = Math.random() * 4000 - 2000;
+		object.position.y = Math.random() * 4000 - 2000;
+		object.position.z = Math.random() * 4000 - 2000;
+		scene.add( object );
+
+		objects.push( object );
+
+		//
+
+		var object = new THREE.Object3D();
+		object.position.x = ( table[ i + 3 ] * 140 ) - 1330;
+		object.position.y = - ( table[ i + 4 ] * 180 ) + 990;
+
+		targets.table.push( object );
+
+	}
+
+	// sphere
+
+	var vector = new THREE.Vector3();
+
+	for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+		var phi = Math.acos( -1 + ( 2 * i ) / l );
+		var theta = Math.sqrt( l * Math.PI ) * phi;
+
+		var object = new THREE.Object3D();
+
+		object.position.x = 800 * Math.cos( theta ) * Math.sin( phi );
+		object.position.y = 800 * Math.sin( theta ) * Math.sin( phi );
+		object.position.z = 800 * Math.cos( phi );
+
+		vector.copy( object.position ).multiplyScalar( 2 );
+
+		object.lookAt( vector );
+
+		targets.sphere.push( object );
+
+	}
+
+	// helix
+
+	var vector = new THREE.Vector3();
+
+	for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+		var phi = i * 0.175 + Math.PI;
+
+		var object = new THREE.Object3D();
+
+		object.position.x = 900 * Math.sin( phi );
+		object.position.y = - ( i * 8 ) + 450;
+		object.position.z = 900 * Math.cos( phi );
+
+		vector.x = object.position.x * 2;
+		vector.y = object.position.y;
+		vector.z = object.position.z * 2;
+
+		object.lookAt( vector );
+
+		targets.helix.push( object );
+
+	}
+
+	// grid
+
+	for ( var i = 0; i < objects.length; i ++ ) {
+
+		var object = new THREE.Object3D();
+
+		object.position.x = ( ( i % 5 ) * 400 ) - 800;
+		object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
+		object.position.z = ( Math.floor( i / 25 ) ) * 1000 - 2000;
+
+		targets.grid.push( object );
+
+	}
+
+	//
+
+	renderer = new THREE.CSS3DRenderer();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.domElement.style.position = 'absolute';
+	document.getElementById( 'container' ).appendChild( renderer.domElement );
+
+	//
+
+	controls = new THREE.TrackballControls( camera, renderer.domElement );
+	controls.rotateSpeed = 0.5;
+	controls.minDistance = 500;
+	controls.maxDistance = 6000;
+	controls.addEventListener( 'change', render );
+
+	var button = document.getElementById( 'table' );
+	button.addEventListener( 'click', function ( event ) {
+
+		transform( targets.table, 2000 );
+
+	}, false );
+
+	var button = document.getElementById( 'sphere' );
+	button.addEventListener( 'click', function ( event ) {
+
+		transform( targets.sphere, 2000 );
+
+	}, false );
+
+	var button = document.getElementById( 'helix' );
+	button.addEventListener( 'click', function ( event ) {
+
+		transform( targets.helix, 2000 );
+
+	}, false );
+
+	var button = document.getElementById( 'grid' );
+	button.addEventListener( 'click', function ( event ) {
+
+		transform( targets.grid, 2000 );
+
+	}, false );
+
+	transform( targets.table, 5000 );
+
+	//
+
+	window.addEventListener( 'resize', onWindowResize, false );
+
+}
+
+function transform( targets, duration ) {
+
+	TWEEN.removeAll();
+
+	for ( var i = 0; i < objects.length; i ++ ) {
+
+		var object = objects[ i ];
+		var target = targets[ i ];
+
+		new TWEEN.Tween( object.position )
+			.to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
+			.easing( TWEEN.Easing.Exponential.InOut )
+			.start();
+
+		new TWEEN.Tween( object.rotation )
+			.to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration )
+			.easing( TWEEN.Easing.Exponential.InOut )
+			.start();
+
+	}
+
+	new TWEEN.Tween( this )
+		.to( {}, duration * 2 )
+		.onUpdate( render )
+		.start();
+
+}
+
+function onWindowResize() {
+
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+
+	renderer.setSize( window.innerWidth, window.innerHeight );
+
+	render();
+
+}
+
+function animate() {
+
+	requestAnimationFrame( animate );
+
+	TWEEN.update();
+
+	controls.update();
+
+}
+
+function render() {
+
+	renderer.render( scene, camera );
+
+}
+
+</script>
+</body>
+</html>
